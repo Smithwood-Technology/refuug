@@ -1,7 +1,7 @@
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 import { Resource, ResourceType } from "@shared/schema";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 interface ResourceState {
