@@ -23,26 +23,28 @@ export default function SidebarFilter() {
 
   return (
     <div className={`hidden md:flex flex-col ${collapsed ? 'md:w-16' : 'md:w-80'} bg-white shadow-lg z-10 transition-all duration-300 ease-in-out h-full`}>
-      {/* Collapse button */}
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        className="absolute top-4 right-2 z-20"
-        onClick={() => setCollapsed(!collapsed)}
-      >
-        {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-      </Button>
-      
       {/* Header */}
-      <div className={`p-4 bg-primary text-white flex items-center ${collapsed ? 'justify-center' : ''}`}>
+      <div className={`p-4 bg-primary text-white flex items-center justify-between ${collapsed ? 'justify-center' : 'justify-between'}`}>
         {collapsed ? (
-          <Filter className="h-5 w-5" />
+          <div className="flex items-center">
+            <Filter className="h-5 w-5" />
+          </div>
         ) : (
-          <>
+          <div className="flex items-center flex-1">
             <h1 className="text-xl font-medium">Urban Nomad</h1>
             <p className="text-sm opacity-80 ml-2">Find resources</p>
-          </>
+          </div>
         )}
+        
+        {/* Collapse button within header */}
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="ml-2 text-white hover:text-white hover:bg-primary-dark rounded-full h-6 w-6 p-0 flex items-center justify-center"
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </Button>
       </div>
       
       {/* Filter content - only visible when expanded */}
