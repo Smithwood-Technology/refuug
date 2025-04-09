@@ -19,7 +19,7 @@ export default function AdminNavBar() {
         </div>
         
         <div className="flex items-center space-x-4">
-          <Link href="/">
+          <Link href="/home">
             <Button variant="ghost" size="sm" className="flex items-center">
               <Map className="mr-2 h-4 w-4" />
               View Map
