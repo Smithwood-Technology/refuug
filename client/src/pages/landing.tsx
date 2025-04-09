@@ -1,9 +1,20 @@
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { MapPin, Lock } from "lucide-react";
+import { MapPin, Lock, ArrowLeft } from "lucide-react";
+import LoginForm from "@/components/admin/LoginForm";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function LandingPage() {
   const [location, setLocation] = useLocation();
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const { user } = useAuth();
+
+  // If user is already logged in, redirect to admin panel
+  if (user) {
+    setLocation("/admin");
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 p-4">
@@ -18,47 +29,67 @@ export default function LandingPage() {
 
         {/* Card */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6">
-          <div className="space-y-6">
-            {/* Guest option */}
-            <div>
-              <Button 
-                onClick={() => setLocation("/home")}
-                size="lg"
-                className="w-full flex items-center justify-center py-6"
-              >
-                <MapPin className="mr-2 h-5 w-5" />
-                Enter as Guest
-              </Button>
-              <p className="mt-2 text-sm text-gray-500">
-                Browse resources on the map without signing in
-              </p>
-            </div>
-
-            {/* Admin option */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
+          {!showLoginForm ? (
+            // Main Options
+            <div className="space-y-6">
+              {/* Guest option */}
+              <div>
+                <Button 
+                  onClick={() => setLocation("/home")}
+                  size="lg"
+                  className="w-full flex items-center justify-center py-6"
+                >
+                  <MapPin className="mr-2 h-5 w-5" />
+                  Enter as Guest
+                </Button>
+                <p className="mt-2 text-sm text-gray-500">
+                  Browse resources on the map without signing in
+                </p>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">or</span>
+
+              {/* Admin option */}
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-gray-500">or</span>
+                </div>
+              </div>
+
+              <div>
+                <Button 
+                  onClick={() => setShowLoginForm(true)}
+                  variant="outline"
+                  size="lg"
+                  className="w-full flex items-center justify-center py-6"
+                >
+                  <Lock className="mr-2 h-5 w-5" />
+                  Admin Login
+                </Button>
+                <p className="mt-2 text-sm text-gray-500">
+                  Access the admin dashboard to manage resources
+                </p>
               </div>
             </div>
-
-            <div>
-              <Button 
-                onClick={() => setLocation("/admin/login")}
-                variant="outline"
-                size="lg"
-                className="w-full flex items-center justify-center py-6"
-              >
-                <Lock className="mr-2 h-5 w-5" />
-                Admin Login
-              </Button>
-              <p className="mt-2 text-sm text-gray-500">
-                Access the admin dashboard to manage resources
-              </p>
+          ) : (
+            // Admin Login Form
+            <div className="space-y-6">
+              <div className="flex items-center mb-4">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="p-0 mr-2"
+                  onClick={() => setShowLoginForm(false)}
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back
+                </Button>
+                <h2 className="text-xl font-medium text-center flex-1 pr-8">Admin Portal Login</h2>
+              </div>
+              <LoginForm />
             </div>
-          </div>
+          )}
         </div>
 
         {/* Footer */}
