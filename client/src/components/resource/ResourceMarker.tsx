@@ -3,11 +3,11 @@ export default function ResourceMarker(type: string, L: any) {
   const resourceTypes: Record<string, { icon: string, color: string }> = {
     shelter: { icon: 'ri-home-heart-line', color: '#8E24AA' },
     food: { icon: 'ri-restaurant-line', color: '#43A047' },
-    water: { icon: 'ri-drop-line', color: '#E53935' },  // Changed from blue to red
+    water: { icon: 'ri-drop-line', color: '#039BE5' },  // Changed back to blue
     wifi: { icon: 'ri-wifi-line', color: '#FFA000' },
     weather: { icon: 'ri-cloud-line', color: '#E53935' },
-    restroom: { icon: 'ri-toilet-paper-line', color: '#607D8B' },
-    health: { icon: 'ri-medicine-bottle-line', color: '#E53935' }  // Changed from blue to red
+    restroom: { icon: 'ri-rest-time-line', color: '#607D8B' },  // Updated icon
+    health: { icon: 'ri-medicine-bottle-line', color: '#E53935' }
   };
 
   const typeInfo = resourceTypes[type] || resourceTypes.shelter;

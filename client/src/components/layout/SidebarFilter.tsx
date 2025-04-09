@@ -10,10 +10,10 @@ import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
 const resourceTypeInfo = {
   shelter: { label: "Shelters / Day Centers", color: "#8E24AA", icon: "ri-home-heart-line" },
   food: { label: "Food Banks / Soup Kitchens", color: "#43A047", icon: "ri-restaurant-line" },
-  water: { label: "Public Water Fountains", color: "#E53935", icon: "ri-drop-line" },
+  water: { label: "Public Water Fountains", color: "#039BE5", icon: "ri-drop-line" },
   wifi: { label: "Public Wifi Zones", color: "#FFA000", icon: "ri-wifi-line" },
   weather: { label: "Extreme Weather Refuge Areas", color: "#E53935", icon: "ri-cloud-line" },
-  restroom: { label: "Public Restrooms", color: "#607D8B", icon: "ri-toilet-paper-line" },
+  restroom: { label: "Public Restrooms", color: "#607D8B", icon: "ri-rest-time-line" },
   health: { label: "Health & Wellness Services", color: "#E53935", icon: "ri-medicine-bottle-line" },
 };
 
