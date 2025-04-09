@@ -13,7 +13,7 @@ const resourceTypeInfo = {
   water: { label: "Public Water Fountains", color: "#039BE5", icon: "ri-drop-line" },
   wifi: { label: "Public Wifi Zones", color: "#FFA000", icon: "ri-wifi-line" },
   weather: { label: "Extreme Weather Refuge Areas", color: "#E53935", icon: "ri-cloud-line" },
-  restroom: { label: "Public Restrooms", color: "#607D8B", icon: "ri-rest-time-line" },
+  restroom: { label: "Public Restrooms", color: "#607D8B", icon: "ri-user-3-line" },
   health: { label: "Health & Wellness Services", color: "#E53935", icon: "ri-medicine-bottle-line" },
 };
 

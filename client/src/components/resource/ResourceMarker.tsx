@@ -6,7 +6,7 @@ export default function ResourceMarker(type: string, L: any) {
     water: { icon: 'ri-drop-line', color: '#039BE5' },  // Changed back to blue
     wifi: { icon: 'ri-wifi-line', color: '#FFA000' },
     weather: { icon: 'ri-cloud-line', color: '#E53935' },
-    restroom: { icon: 'ri-rest-time-line', color: '#607D8B' },  // Updated icon
+    restroom: { icon: 'ri-user-3-line', color: '#607D8B' },  // Updated icon to standard restroom sign
     health: { icon: 'ri-medicine-bottle-line', color: '#E53935' }
   };
 
