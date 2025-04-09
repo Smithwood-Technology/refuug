@@ -128,7 +128,7 @@ export class MemStorage implements IStorage {
     // In production, you would use a more secure password and environment variables
     this.createUser({
       username: "admin",
-      password: "6531f91d0d66abc5b38e4b19ba8f389d2aafe6731a1cad47e8c9a5e0bbf61ae60ffcad5757a58c51f26b8f3d279e49b44a66856a7bf44d4787cfe115783fe19.ee3da35a36c57fad"
+      password: "24b74eeb30724dc4a5d478ff079f4acdb33a91410ec7f3bf457789d2b632ea6cde18a8067b8b84053b0d4b251a5590749a5fedebf243de8a0cbf2189384de830.b569901b4de5266c39677f8466cb8ea9"
     });
     
     const sampleResources: InsertResource[] = [
