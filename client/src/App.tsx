@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Admin from "@/pages/admin";
 import LoginPage from "@/pages/admin/login";
+import LandingPage from "@/pages/landing";
 import { ResourceStoreProvider } from "@/hooks/use-resource-store";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
@@ -13,7 +14,9 @@ import { ProtectedRoute } from "@/lib/protected-route";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      <Route path="/" component={LandingPage} />
+      <Route path="/home" component={Home} />
+      <Route path="/map" component={Home} />
       <ProtectedRoute path="/admin" component={Admin} />
       <Route path="/admin/login" component={LoginPage} />
       <Route component={NotFound} />

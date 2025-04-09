@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
-import { Resource, ResourceType } from "@shared/schema";
+import { Resource, ResourceType, InsertResource } from "@shared/schema";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -18,8 +18,8 @@ interface ResourceState {
 interface ResourceActions {
   toggleResourceType: (type: ResourceType) => void;
   toggleOpenNow: () => void;
-  addResource: (resource: Omit<Resource, "id">) => Promise<void>;
-  updateResource: (id: number, data: Partial<Resource>) => Promise<void>;
+  addResource: (resource: InsertResource) => Promise<void>;
+  updateResource: (id: number, data: Partial<InsertResource>) => Promise<void>;
   deleteResource: (id: number) => Promise<void>;
 }
 
@@ -54,7 +54,7 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
 
   // Add resource mutation
   const addResourceMutation = useMutation({
-    mutationFn: async (resource: Omit<Resource, "id">) => {
+    mutationFn: async (resource: InsertResource) => {
       const res = await apiRequest("POST", "/api/resources", resource);
       return res.json();
     },
@@ -76,7 +76,7 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
 
   // Update resource mutation
   const updateResourceMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<Resource> }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertResource> }) => {
       const res = await apiRequest("PATCH", `/api/resources/${id}`, data);
       return res.json();
     },
@@ -153,11 +153,11 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
     }));
   };
 
-  const addResource = async (resource: Omit<Resource, "id">) => {
+  const addResource = async (resource: InsertResource) => {
     await addResourceMutation.mutateAsync(resource);
   };
 
-  const updateResource = async (id: number, data: Partial<Resource>) => {
+  const updateResource = async (id: number, data: Partial<InsertResource>) => {
     await updateResourceMutation.mutateAsync({ id, data });
   };
 
