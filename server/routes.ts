@@ -3,8 +3,11 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertResourceSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
+import { setupAuth, isAuthenticated } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Set up authentication
+  setupAuth(app);
   // Get all resources
   app.get("/api/resources", async (_req: Request, res: Response) => {
     try {
@@ -36,8 +39,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create a new resource
-  app.post("/api/resources", async (req: Request, res: Response) => {
+  // Create a new resource - protected by auth
+  app.post("/api/resources", isAuthenticated, async (req: Request, res: Response) => {
     try {
       // Validate input
       const parseResult = insertResourceSchema.safeParse(req.body);
@@ -55,8 +58,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update a resource
-  app.patch("/api/resources/:id", async (req: Request, res: Response) => {
+  // Update a resource - protected by auth
+  app.patch("/api/resources/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const resourceId = parseInt(req.params.id);
       if (isNaN(resourceId)) {
@@ -80,8 +83,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete a resource
-  app.delete("/api/resources/:id", async (req: Request, res: Response) => {
+  // Delete a resource - protected by auth
+  app.delete("/api/resources/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const resourceId = parseInt(req.params.id);
       if (isNaN(resourceId)) {

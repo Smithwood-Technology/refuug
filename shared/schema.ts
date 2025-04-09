@@ -7,8 +7,8 @@ export const resources = pgTable("resources", {
   name: text("name").notNull(),
   type: text("type").notNull(),
   address: text("address").notNull(),
-  latitude: numeric("latitude", { precision: 10, scale: 6 }).notNull(),
-  longitude: numeric("longitude", { precision: 10, scale: 6 }).notNull(),
+  latitude: text("latitude").notNull(),
+  longitude: text("longitude").notNull(),
   hours: text("hours"),
   notes: text("notes"),
 });

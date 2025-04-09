@@ -4,6 +4,10 @@ import {
   User, 
   InsertUser 
 } from "@shared/schema";
+import session from "express-session";
+import createMemoryStore from "memorystore";
+
+const MemoryStore = createMemoryStore(session);
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -15,6 +19,8 @@ export interface IStorage {
   createResource(resource: InsertResource): Promise<Resource>;
   updateResource(id: number, resource: Partial<InsertResource>): Promise<Resource | undefined>;
   deleteResource(id: number): Promise<boolean>;
+  
+  sessionStore: session.Store;
 }
 
 export class MemStorage implements IStorage {
@@ -22,12 +28,16 @@ export class MemStorage implements IStorage {
   private resources: Map<number, Resource>;
   private userCurrentId: number;
   private resourceCurrentId: number;
+  public sessionStore: session.Store;
 
   constructor() {
     this.users = new Map();
     this.resources = new Map();
     this.userCurrentId = 1;
     this.resourceCurrentId = 1;
+    this.sessionStore = new MemoryStore({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    });
     
     // Initialize with sample data
     this.initializeSampleData();
@@ -60,7 +70,16 @@ export class MemStorage implements IStorage {
   
   async createResource(insertResource: InsertResource): Promise<Resource> {
     const id = this.resourceCurrentId++;
-    const resource: Resource = { ...insertResource, id };
+    const resource: Resource = { 
+      id,
+      name: insertResource.name,
+      type: insertResource.type,
+      address: insertResource.address,
+      latitude: insertResource.latitude.toString(),
+      longitude: insertResource.longitude.toString(),
+      hours: insertResource.hours || null,
+      notes: insertResource.notes || null
+    };
     this.resources.set(id, resource);
     return resource;
   }
@@ -72,9 +91,27 @@ export class MemStorage implements IStorage {
       return undefined;
     }
     
+    // Create a new update object with correct types
+    const formattedUpdate: Partial<Resource> = {};
+    
+    // Only copy fields that are present in the update
+    if (resourceUpdate.name !== undefined) formattedUpdate.name = resourceUpdate.name;
+    if (resourceUpdate.type !== undefined) formattedUpdate.type = resourceUpdate.type;
+    if (resourceUpdate.address !== undefined) formattedUpdate.address = resourceUpdate.address;
+    if (resourceUpdate.hours !== undefined) formattedUpdate.hours = resourceUpdate.hours;
+    if (resourceUpdate.notes !== undefined) formattedUpdate.notes = resourceUpdate.notes;
+    
+    // Convert latitude and longitude to strings if they exist
+    if (resourceUpdate.latitude !== undefined) {
+      formattedUpdate.latitude = resourceUpdate.latitude.toString();
+    }
+    if (resourceUpdate.longitude !== undefined) {
+      formattedUpdate.longitude = resourceUpdate.longitude.toString();
+    }
+    
     const updatedResource: Resource = {
       ...existingResource,
-      ...resourceUpdate,
+      ...formattedUpdate,
     };
     
     this.resources.set(id, updatedResource);
@@ -86,6 +123,14 @@ export class MemStorage implements IStorage {
   }
   
   private initializeSampleData() {
+    // Create default admin user with the hashed password
+    // This uses the password "urban123" as requested
+    // In production, you would use a more secure password and environment variables
+    this.createUser({
+      username: "admin",
+      password: "6531f91d0d66abc5b38e4b19ba8f389d2aafe6731a1cad47e8c9a5e0bbf61ae60ffcad5757a58c51f26b8f3d279e49b44a66856a7bf44d4787cfe115783fe19.ee3da35a36c57fad"
+    });
+    
     const sampleResources: InsertResource[] = [
       {
         name: "Hope Day Center",
