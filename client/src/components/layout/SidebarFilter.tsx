@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ResourceType } from "@shared/schema";
 import { useResourceStore } from "@/hooks/use-resource-store";
 import { Link } from "wouter";
@@ -8,18 +8,29 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
 
 const resourceTypeInfo = {
-  shelter: { label: "Shelters / Day Centers", color: "#8E24AA" },
-  food: { label: "Food Banks / Soup Kitchens", color: "#43A047" },
-  water: { label: "Public Water Fountains", color: "#039BE5" },
-  wifi: { label: "Public Wifi Zones", color: "#FFA000" },
-  weather: { label: "Extreme Weather Refuge Areas", color: "#E53935" },
-  restroom: { label: "Public Restrooms", color: "#607D8B" },
-  health: { label: "Health & Wellness Services", color: "#00ACC1" },
+  shelter: { label: "Shelters / Day Centers", color: "#8E24AA", icon: "ri-home-heart-line" },
+  food: { label: "Food Banks / Soup Kitchens", color: "#43A047", icon: "ri-restaurant-line" },
+  water: { label: "Public Water Fountains", color: "#E53935", icon: "ri-drop-line" },
+  wifi: { label: "Public Wifi Zones", color: "#FFA000", icon: "ri-wifi-line" },
+  weather: { label: "Extreme Weather Refuge Areas", color: "#E53935", icon: "ri-cloud-line" },
+  restroom: { label: "Public Restrooms", color: "#607D8B", icon: "ri-toilet-paper-line" },
+  health: { label: "Health & Wellness Services", color: "#E53935", icon: "ri-medicine-bottle-line" },
 };
 
 export default function SidebarFilter() {
   const { filters, toggleResourceType, toggleOpenNow } = useResourceStore();
   const [collapsed, setCollapsed] = useState(false);
+
+  // Add Remix Icon CSS if not already added
+  useEffect(() => {
+    if (!document.getElementById('remix-icon-css')) {
+      const link = document.createElement('link');
+      link.id = 'remix-icon-css';
+      link.rel = 'stylesheet';
+      link.href = 'https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css';
+      document.head.appendChild(link);
+    }
+  }, []);
 
   return (
     <div className={`hidden md:flex flex-col ${collapsed ? 'md:w-16' : 'md:w-80'} bg-white shadow-lg z-10 transition-all duration-300 ease-in-out h-full`}>
@@ -63,10 +74,12 @@ export default function SidebarFilter() {
                 htmlFor={`${type}-desktop`} 
                 className="ml-2 block text-sm cursor-pointer flex items-center"
               >
-                <span 
-                  className="inline-block w-3 h-3 rounded-full mr-2" 
+                <div 
+                  className="flex items-center justify-center w-5 h-5 rounded-full mr-2"
                   style={{ backgroundColor: info.color }}
-                />
+                >
+                  <i className={`${info.icon} text-white text-xs`}></i>
+                </div>
                 {info.label}
               </Label>
             </div>
@@ -105,14 +118,12 @@ export default function SidebarFilter() {
         {Object.entries(resourceTypeInfo).map(([type, info]) => (
           <div 
             key={type}
-            className={`w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-opacity duration-150 ${filters.types[type as ResourceType] ? 'opacity-100' : 'opacity-30'}`}
+            className={`w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-opacity duration-150 ${filters.types[type as ResourceType] ? 'opacity-100' : 'opacity-40'}`}
             style={{ backgroundColor: info.color }}
             onClick={() => toggleResourceType(type as ResourceType)}
             title={info.label}
           >
-            {filters.types[type as ResourceType] && (
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-            )}
+            <i className={`${info.icon} text-white`}></i>
           </div>
         ))}
       </div>
