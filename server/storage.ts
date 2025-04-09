@@ -131,75 +131,7 @@ export class MemStorage implements IStorage {
       password: "24b74eeb30724dc4a5d478ff079f4acdb33a91410ec7f3bf457789d2b632ea6cde18a8067b8b84053b0d4b251a5590749a5fedebf243de8a0cbf2189384de830.b569901b4de5266c39677f8466cb8ea9"
     });
     
-    const sampleResources: InsertResource[] = [
-      {
-        name: "Hope Day Center",
-        type: "shelter",
-        address: "123 Main St, Anytown",
-        latitude: 47.6062,
-        longitude: -122.3321,
-        hours: "Mon-Fri: 8am-4pm",
-        notes: "Provides showers, laundry, and case management"
-      },
-      {
-        name: "Community Kitchen",
-        type: "food",
-        address: "456 Oak Ave, Anytown",
-        latitude: 47.6082,
-        longitude: -122.3347,
-        hours: "Daily: 11am-1pm, 5pm-7pm",
-        notes: "Free hot meals, no ID required"
-      },
-      {
-        name: "City Park Water Fountain",
-        type: "water",
-        address: "789 Park Rd, Anytown",
-        latitude: 47.6042,
-        longitude: -122.3301,
-        hours: "24/7",
-        notes: "Wheelchair accessible"
-      },
-      {
-        name: "Public Library WiFi",
-        type: "wifi",
-        address: "101 Library Lane, Anytown",
-        latitude: 47.6102,
-        longitude: -122.3341,
-        hours: "Mon-Sat: 9am-8pm, Sun: 12pm-5pm",
-        notes: "Free WiFi, computer access with library card"
-      },
-      {
-        name: "Community Center Cooling Station",
-        type: "weather",
-        address: "202 Community Way, Anytown",
-        latitude: 47.6022,
-        longitude: -122.3311,
-        hours: "Open during extreme weather events",
-        notes: "Air conditioning, water, and seating available"
-      },
-      {
-        name: "Downtown Public Restroom",
-        type: "restroom",
-        address: "303 Central Ave, Anytown",
-        latitude: 47.6072,
-        longitude: -122.3361,
-        hours: "6am-10pm",
-        notes: "ADA accessible"
-      },
-      {
-        name: "Community Health Clinic",
-        type: "health",
-        address: "404 Medical Dr, Anytown",
-        latitude: 47.6052,
-        longitude: -122.3281,
-        hours: "Mon-Fri: 9am-5pm",
-        notes: "Free basic health services, walk-ins welcome"
-      }
-    ];
-    
-    sampleResources.forEach(resource => {
-      this.createResource(resource);
-    });
+    // No sample resources - user prefers to add them manually
   }
 }
 
