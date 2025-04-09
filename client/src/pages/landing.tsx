@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { MapPin, Lock, ArrowLeft } from "lucide-react";
@@ -11,10 +11,11 @@ export default function LandingPage() {
   const { user } = useAuth();
 
   // If user is already logged in, redirect to admin panel
-  if (user) {
-    setLocation("/admin");
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      setLocation("/admin");
+    }
+  }, [user, setLocation]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 p-4">

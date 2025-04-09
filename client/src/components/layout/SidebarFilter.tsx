@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { ResourceType } from "@shared/schema";
 import { useResourceStore } from "@/hooks/use-resource-store";
 import { Link } from "wouter";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
 
 const resourceTypeInfo = {
   shelter: { label: "Shelters / Day Centers", color: "#8E24AA" },
@@ -17,15 +19,34 @@ const resourceTypeInfo = {
 
 export default function SidebarFilter() {
   const { filters, toggleResourceType, toggleOpenNow } = useResourceStore();
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="hidden md:block md:w-80 bg-white shadow-lg z-10 overflow-y-auto">
-      <div className="p-4 bg-primary text-white">
-        <h1 className="text-xl font-medium">Urban Nomad</h1>
-        <p className="text-sm opacity-80">Find resources near you</p>
+    <div className={`hidden md:flex flex-col ${collapsed ? 'md:w-16' : 'md:w-80'} bg-white shadow-lg z-10 transition-all duration-300 ease-in-out h-full`}>
+      {/* Collapse button */}
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="absolute top-4 right-2 z-20"
+        onClick={() => setCollapsed(!collapsed)}
+      >
+        {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+      </Button>
+      
+      {/* Header */}
+      <div className={`p-4 bg-primary text-white flex items-center ${collapsed ? 'justify-center' : ''}`}>
+        {collapsed ? (
+          <Filter className="h-5 w-5" />
+        ) : (
+          <>
+            <h1 className="text-xl font-medium">Urban Nomad</h1>
+            <p className="text-sm opacity-80 ml-2">Find resources</p>
+          </>
+        )}
       </div>
       
-      <div className="p-4">
+      {/* Filter content - only visible when expanded */}
+      <div className={`p-4 overflow-y-auto flex-grow ${collapsed ? 'hidden' : 'block'}`}>
         <h2 className="font-medium mb-4">Filter Resources</h2>
         
         <div className="space-y-3">
@@ -71,10 +92,27 @@ export default function SidebarFilter() {
             to="/admin"
             className="inline-flex items-center text-primary hover:text-primary-dark"
           >
-            <Settings className="mr-1 h-4 w-4" />
+            <Filter className="mr-1 h-4 w-4" />
             Admin Portal
           </Link>
         </div>
+      </div>
+      
+      {/* Collapsed filter indicators */}
+      <div className={`p-2 flex-grow ${collapsed ? 'flex flex-col items-center space-y-3' : 'hidden'}`}>
+        {Object.entries(resourceTypeInfo).map(([type, info]) => (
+          <div 
+            key={type}
+            className={`w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-opacity duration-150 ${filters.types[type as ResourceType] ? 'opacity-100' : 'opacity-30'}`}
+            style={{ backgroundColor: info.color }}
+            onClick={() => toggleResourceType(type as ResourceType)}
+            title={info.label}
+          >
+            {filters.types[type as ResourceType] && (
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
