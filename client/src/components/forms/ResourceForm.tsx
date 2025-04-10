@@ -35,7 +35,15 @@ interface ResourceFormProps {
 export default function ResourceForm({ initialData, onSubmit, onCancel }: ResourceFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+    defaultValues: initialData ? {
+      ...initialData,
+      // Ensure we're using the correct types
+      type: initialData.type as ResourceType,
+      latitude: typeof initialData.latitude === 'string' ? parseFloat(initialData.latitude) : initialData.latitude,
+      longitude: typeof initialData.longitude === 'string' ? parseFloat(initialData.longitude) : initialData.longitude,
+      hours: initialData.hours || "",
+      notes: initialData.notes || "",
+    } : {
       name: "",
       type: undefined,
       address: "",
@@ -203,7 +211,11 @@ export default function ResourceForm({ initialData, onSubmit, onCancel }: Resour
             <FormItem>
               <FormLabel>Operating Hours</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="e.g., Mon-Fri: 9am-5pm, Sat: 10am-2pm" />
+                <Input 
+                  {...field} 
+                  value={field.value || ''}
+                  placeholder="e.g., Mon-Fri: 9am-5pm, Sat: 10am-2pm" 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -220,6 +232,7 @@ export default function ResourceForm({ initialData, onSubmit, onCancel }: Resour
               <FormControl>
                 <Textarea 
                   {...field} 
+                  value={field.value || ''}
                   placeholder="Additional information about this resource"
                   rows={3}
                 />

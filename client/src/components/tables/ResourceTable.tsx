@@ -80,11 +80,11 @@ export default function ResourceTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Resource</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Address</TableHead>
-            <TableHead>Hours</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="text-foreground">Resource</TableHead>
+            <TableHead className="text-foreground">Type</TableHead>
+            <TableHead className="text-foreground">Address</TableHead>
+            <TableHead className="text-foreground">Hours</TableHead>
+            <TableHead className="text-foreground">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -97,7 +97,7 @@ export default function ResourceTable({
           ) : (
             resources.map((resource) => (
               <TableRow key={resource.id}>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium text-foreground">
                   {resource.name}
                 </TableCell>
                 <TableCell>
@@ -105,10 +105,10 @@ export default function ResourceTable({
                     {typeLabels[resource.type as ResourceType]}
                   </span>
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-foreground">
                   {resource.address}
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-foreground">
                   {resource.hours || "-"}
                 </TableCell>
                 <TableCell>
