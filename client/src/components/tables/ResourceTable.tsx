@@ -90,7 +90,7 @@ export default function ResourceTable({
         <TableBody>
           {resources.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-4">
+              <TableCell colSpan={5} className="text-center py-4 text-muted-foreground">
                 No resources found. Add a resource using the form above.
               </TableCell>
             </TableRow>

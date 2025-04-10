@@ -188,7 +188,7 @@ export default function ResourceForm({ initialData, onSubmit, onCancel }: Resour
               type="button" 
               variant="outline" 
               onClick={getCurrentLocation}
-              className="w-full text-primary border-primary hover:bg-primary-50"
+              className="w-full text-primary border-primary hover:bg-primary/10"
             >
               Use My Current Location
             </Button>
