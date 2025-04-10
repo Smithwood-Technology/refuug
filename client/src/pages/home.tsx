@@ -6,6 +6,7 @@ import MapContainer from "@/components/layout/MapContainer";
 import { useResourceStore } from "@/hooks/use-resource-store";
 import { Button } from "@/components/ui/button";
 import { Home as HomeIcon } from "lucide-react";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export default function Home() {
   const { isLoading } = useResourceStore();
@@ -18,14 +19,15 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen">
-      {/* Mini header with home link */}
-      <header className="bg-white border-b px-4 py-2 flex items-center z-10">
+      {/* Mini header with home link and theme toggle */}
+      <header className="bg-card border-b border-border px-4 py-2 flex items-center justify-between z-10">
         <Link href="/">
           <Button variant="ghost" size="sm" className="flex items-center">
             <HomeIcon className="mr-2 h-4 w-4" />
             Home
           </Button>
         </Link>
+        <ThemeToggle />
       </header>
       
       <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
