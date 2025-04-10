@@ -8,6 +8,7 @@ import Admin from "@/pages/admin";
 import LandingPage from "@/pages/landing";
 import { ResourceStoreProvider } from "@/hooks/use-resource-store";
 import { AuthProvider } from "@/hooks/use-auth";
+import { ThemeProvider } from "@/hooks/use-theme";
 import { ProtectedRoute } from "@/lib/protected-route";
 
 function Router() {
@@ -24,14 +25,16 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ResourceStoreProvider>
-          <Router />
-          <Toaster />
-        </ResourceStoreProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <ResourceStoreProvider>
+            <Router />
+            <Toaster />
+          </ResourceStoreProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 
