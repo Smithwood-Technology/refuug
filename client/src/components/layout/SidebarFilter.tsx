@@ -33,9 +33,9 @@ export default function SidebarFilter() {
   }, []);
 
   return (
-    <div className={`hidden md:flex flex-col ${collapsed ? 'md:w-16' : 'md:w-80'} bg-white shadow-lg z-10 transition-all duration-300 ease-in-out h-full`}>
+    <div className={`hidden md:flex flex-col ${collapsed ? 'md:w-16' : 'md:w-80'} bg-card shadow-lg z-10 transition-all duration-300 ease-in-out h-full`}>
       {/* Header */}
-      <div className={`p-4 bg-primary text-white flex items-center justify-between ${collapsed ? 'justify-center' : 'justify-between'}`}>
+      <div className={`p-4 bg-primary text-primary-foreground flex items-center justify-between ${collapsed ? 'justify-center' : 'justify-between'}`}>
         {collapsed ? (
           <div className="flex items-center">
             <Filter className="h-5 w-5" />
@@ -51,7 +51,7 @@ export default function SidebarFilter() {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="ml-2 text-white hover:text-white hover:bg-primary-dark rounded-full h-6 w-6 p-0 flex items-center justify-center"
+          className="ml-2 text-primary-foreground hover:text-primary-foreground hover:bg-primary/80 rounded-full h-6 w-6 p-0 flex items-center justify-center"
           onClick={() => setCollapsed(!collapsed)}
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -60,7 +60,7 @@ export default function SidebarFilter() {
       
       {/* Filter content - only visible when expanded */}
       <div className={`p-4 overflow-y-auto flex-grow ${collapsed ? 'hidden' : 'block'}`}>
-        <h2 className="font-medium mb-4">Filter Resources</h2>
+        <h2 className="font-medium mb-4 text-foreground">Filter Resources</h2>
         
         <div className="space-y-3">
           {Object.entries(resourceTypeInfo).map(([type, info]) => (
@@ -72,7 +72,7 @@ export default function SidebarFilter() {
               />
               <Label 
                 htmlFor={`${type}-desktop`} 
-                className="ml-2 block text-sm cursor-pointer flex items-center"
+                className="ml-2 block text-sm cursor-pointer flex items-center text-foreground"
               >
                 <div 
                   className="flex items-center justify-center w-5 h-5 rounded-full mr-2"
@@ -85,7 +85,7 @@ export default function SidebarFilter() {
             </div>
           ))}
           
-          <div className="border-t border-gray-200 pt-3 mt-3">
+          <div className="border-t border-border pt-3 mt-3">
             <div className="flex items-center">
               <Checkbox 
                 id="open-now-desktop"
@@ -94,7 +94,7 @@ export default function SidebarFilter() {
               />
               <Label 
                 htmlFor="open-now-desktop" 
-                className="ml-2 block text-sm cursor-pointer"
+                className="ml-2 block text-sm cursor-pointer text-foreground"
               >
                 Currently Open
               </Label>
@@ -105,7 +105,7 @@ export default function SidebarFilter() {
         <div className="mt-6">
           <Link 
             to="/admin"
-            className="inline-flex items-center text-primary hover:text-primary-dark"
+            className="inline-flex items-center text-primary hover:text-primary/80"
           >
             <Filter className="mr-1 h-4 w-4" />
             Admin Portal

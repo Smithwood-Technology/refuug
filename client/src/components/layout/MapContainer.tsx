@@ -146,12 +146,12 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
       />
       
       {/* Mobile top bar */}
-      <div className="md:hidden absolute top-0 left-0 right-0 bg-white shadow-md z-10 px-4 py-3 flex justify-between items-center">
+      <div className="md:hidden absolute top-0 left-0 right-0 bg-card shadow-md z-10 px-4 py-3 flex justify-between items-center">
         <h1 className="text-lg font-medium text-primary">Urban Nomad</h1>
         <Button 
           onClick={toggleFilterPanel}
           size="icon"
-          className="bg-primary text-white rounded-full"
+          className="bg-primary text-primary-foreground rounded-full"
         >
           <Filter className="h-5 w-5" />
         </Button>
@@ -161,7 +161,7 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
       <Button
         onClick={centerUserLocation}
         size="icon"
-        className="absolute bottom-32 md:bottom-6 right-6 bg-white hover:bg-gray-100 text-primary p-3 rounded-full shadow-lg z-20"
+        className="absolute bottom-32 md:bottom-6 right-6 bg-card hover:bg-accent text-primary p-3 rounded-full shadow-lg z-20"
       >
         <MapPin className="h-5 w-5" />
       </Button>

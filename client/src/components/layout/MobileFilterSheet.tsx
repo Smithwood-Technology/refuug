@@ -28,16 +28,16 @@ export default function MobileFilterSheet({ isOpen, onClose }: MobileFilterSheet
   return (
     <div 
       className={cn(
-        "md:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-xl shadow-lg transform transition-transform duration-300 z-30",
+        "md:hidden fixed bottom-0 left-0 right-0 bg-card rounded-t-xl shadow-lg transform transition-transform duration-300 z-30",
         isOpen ? "translate-y-0" : "translate-y-full"
       )}
     >
       <div className="flex justify-center p-2">
-        <div className="w-10 h-1 bg-gray-300 rounded-full"></div>
+        <div className="w-10 h-1 bg-muted rounded-full"></div>
       </div>
       
       <div className="px-4 py-3">
-        <h2 className="font-medium mb-4">Filter Resources</h2>
+        <h2 className="font-medium mb-4 text-foreground">Filter Resources</h2>
         
         <div className="space-y-3">
           {Object.entries(resourceTypeInfo).map(([type, info]) => (
@@ -49,7 +49,7 @@ export default function MobileFilterSheet({ isOpen, onClose }: MobileFilterSheet
               />
               <Label 
                 htmlFor={`${type}-mobile`} 
-                className="ml-2 block text-sm cursor-pointer flex items-center"
+                className="ml-2 block text-sm cursor-pointer flex items-center text-foreground"
               >
                 <span 
                   className="inline-block w-3 h-3 rounded-full mr-2" 
@@ -60,7 +60,7 @@ export default function MobileFilterSheet({ isOpen, onClose }: MobileFilterSheet
             </div>
           ))}
           
-          <div className="border-t border-gray-200 pt-3 mt-3">
+          <div className="border-t border-border pt-3 mt-3">
             <div className="flex items-center">
               <Checkbox 
                 id="open-now-mobile"
@@ -69,7 +69,7 @@ export default function MobileFilterSheet({ isOpen, onClose }: MobileFilterSheet
               />
               <Label 
                 htmlFor="open-now-mobile" 
-                className="ml-2 block text-sm cursor-pointer"
+                className="ml-2 block text-sm cursor-pointer text-foreground"
               >
                 Currently Open
               </Label>
@@ -80,7 +80,7 @@ export default function MobileFilterSheet({ isOpen, onClose }: MobileFilterSheet
         <div className="mt-4 mb-6 flex space-x-3">
           <Link 
             to="/admin"
-            className="flex-1 py-2 px-4 border border-primary text-primary text-center rounded-lg hover:bg-primary-50"
+            className="flex-1 py-2 px-4 border border-primary text-primary text-center rounded-lg hover:bg-primary/10"
           >
             Admin Portal
           </Link>
