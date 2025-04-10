@@ -2,6 +2,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Loader2, LogOut, Map } from "lucide-react";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export default function AdminNavBar() {
   const { user, logoutMutation } = useAuth();
@@ -11,7 +12,7 @@ export default function AdminNavBar() {
   };
   
   return (
-    <header className="bg-white border-b">
+    <header className="bg-card border-b border-border">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <h1 className="text-xl font-bold text-primary">Urban Nomad</h1>
@@ -19,6 +20,8 @@ export default function AdminNavBar() {
         </div>
         
         <div className="flex items-center space-x-4">
+          <ThemeToggle />
+          
           <Link href="/home">
             <Button variant="ghost" size="sm" className="flex items-center">
               <Map className="mr-2 h-4 w-4" />
@@ -28,8 +31,8 @@ export default function AdminNavBar() {
           
           {user && (
             <div className="flex items-center">
-              <span className="mr-4 text-sm text-gray-600">
-                Logged in as <span className="font-medium">{user.username}</span>
+              <span className="mr-4 text-sm text-muted-foreground">
+                Logged in as <span className="font-medium text-foreground">{user.username}</span>
               </span>
               
               <Button 

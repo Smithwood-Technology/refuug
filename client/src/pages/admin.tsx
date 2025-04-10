@@ -23,15 +23,15 @@ export default function Admin() {
   };
 
   return (
-    <div className="flex flex-col bg-gray-50 min-h-screen">
+    <div className="flex flex-col bg-background min-h-screen">
       <AdminNavBar />
       
       <div className="max-w-4xl mx-auto px-4 py-6 w-full">
-        <h1 className="text-2xl font-medium mb-6">Resource Management</h1>
+        <h1 className="text-2xl font-medium mb-6 text-foreground">Resource Management</h1>
         
         <Card className="mb-8">
           <CardContent className="pt-6">
-            <h2 className="text-xl font-medium mb-4">
+            <h2 className="text-xl font-medium mb-4 text-card-foreground">
               {editingResource ? 'Edit Resource' : 'Add New Resource'}
             </h2>
             
@@ -52,8 +52,8 @@ export default function Admin() {
         
         <Card>
           <CardContent className="pt-6">
-            <h2 className="text-xl font-medium mb-4">Resource List</h2>
-            <p className="text-gray-600 mb-4">
+            <h2 className="text-xl font-medium mb-4 text-card-foreground">Resource List</h2>
+            <p className="text-muted-foreground mb-4">
               View and edit existing resources. Changes will immediately reflect on the map.
             </p>
             
