@@ -1,10 +1,17 @@
-import { ResourceType } from "@shared/schema";
+import { ResourceType, cities } from "@shared/schema";
 import { useResourceStore } from "@/hooks/use-resource-store";
 import { Link } from "wouter";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Settings, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const resourceTypeInfo = {
@@ -23,7 +30,13 @@ interface MobileFilterSheetProps {
 }
 
 export default function MobileFilterSheet({ isOpen, onClose }: MobileFilterSheetProps) {
-  const { filters, toggleResourceType, toggleOpenNow } = useResourceStore();
+  const { 
+    filters, 
+    toggleResourceType, 
+    toggleOpenNow,
+    selectedCity,
+    setSelectedCity
+  } = useResourceStore();
 
   return (
     <div 
@@ -37,7 +50,33 @@ export default function MobileFilterSheet({ isOpen, onClose }: MobileFilterSheet
       </div>
       
       <div className="px-4 py-3">
-        <h2 className="font-medium mb-4 text-foreground">Filter Resources</h2>
+        <h2 className="font-medium mb-3 text-foreground">Select City</h2>
+        
+        <div className="mb-4">
+          <Select
+            value={selectedCity.name}
+            onValueChange={(cityName) => {
+              const city = cities.find(c => c.name === cityName);
+              if (city) setSelectedCity(city);
+            }}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select city" />
+            </SelectTrigger>
+            <SelectContent>
+              {cities.map((city) => (
+                <SelectItem key={city.name} value={city.name}>
+                  <div className="flex items-center">
+                    <MapPin className="w-3 h-3 mr-2" />
+                    {city.name}, {city.state}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <h2 className="font-medium mb-3 text-foreground">Filter Resources</h2>
         
         <div className="space-y-3">
           {Object.entries(resourceTypeInfo).map(([type, info]) => (

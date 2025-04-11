@@ -46,6 +46,13 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
   
   // Default to Atlanta
   const [selectedCity, setSelectedCity] = useState<City>(cities[3]);
+  
+  // Add effect to trigger refetch when the selected city changes
+  const handleCityChange = (city: City) => {
+    setSelectedCity(city);
+    // Invalidate the resource query when the city changes to trigger a refetch
+    queryClient.invalidateQueries({ queryKey: ["/api/resources", city.name] });
+  };
 
   // Fetch resources based on selected city
   const { 

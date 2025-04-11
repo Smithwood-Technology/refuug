@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
-import { ResourceType } from "@shared/schema";
+import { ResourceType, cities } from "@shared/schema";
 import { useResourceStore } from "@/hooks/use-resource-store";
 import { Link } from "wouter";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ChevronLeft, ChevronRight, Filter, MapPin } from "lucide-react";
 
 const resourceTypeInfo = {
   shelter: { label: "Shelters / Day Centers", color: "#8E24AA", icon: "ri-home-heart-line" },
@@ -18,7 +25,13 @@ const resourceTypeInfo = {
 };
 
 export default function SidebarFilter() {
-  const { filters, toggleResourceType, toggleOpenNow } = useResourceStore();
+  const { 
+    filters, 
+    toggleResourceType, 
+    toggleOpenNow, 
+    selectedCity, 
+    setSelectedCity 
+  } = useResourceStore();
   const [collapsed, setCollapsed] = useState(false);
 
   // Add Remix Icon CSS if not already added
@@ -60,7 +73,33 @@ export default function SidebarFilter() {
       
       {/* Filter content - only visible when expanded */}
       <div className={`p-4 overflow-y-auto flex-grow ${collapsed ? 'hidden' : 'block'}`}>
-        <h2 className="font-medium mb-4 text-foreground">Filter Resources</h2>
+        <h2 className="font-medium mb-3 text-foreground">Select City</h2>
+        
+        <div className="mb-4">
+          <Select
+            value={selectedCity.name}
+            onValueChange={(cityName) => {
+              const city = cities.find(c => c.name === cityName);
+              if (city) setSelectedCity(city);
+            }}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select city" />
+            </SelectTrigger>
+            <SelectContent>
+              {cities.map((city) => (
+                <SelectItem key={city.name} value={city.name}>
+                  <div className="flex items-center">
+                    <MapPin className="w-3 h-3 mr-2" />
+                    {city.name}, {city.state}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <h2 className="font-medium mb-3 text-foreground">Filter Resources</h2>
         
         <div className="space-y-3">
           {Object.entries(resourceTypeInfo).map(([type, info]) => (
