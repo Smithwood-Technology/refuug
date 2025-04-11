@@ -3,6 +3,7 @@ import { useResourceStore } from "@/hooks/use-resource-store";
 import ResourceForm from "@/components/forms/ResourceForm";
 import ResourceTable from "@/components/tables/ResourceTable";
 import AdminNavBar from "@/components/admin/AdminNavBar";
+import CitySelector from "@/components/admin/CitySelector";
 import { Resource } from "@shared/schema";
 import { 
   Card, 
@@ -28,6 +29,9 @@ export default function Admin() {
       
       <div className="max-w-4xl mx-auto px-4 py-6 w-full">
         <h1 className="text-2xl font-medium mb-6 text-foreground">Resource Management</h1>
+        
+        {/* City selector for map focus */}
+        <CitySelector />
         
         <Card className="mb-8">
           <CardContent className="pt-6">

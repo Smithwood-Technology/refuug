@@ -60,7 +60,17 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
         mapRef.current = null;
       }
     };
-  }, [leaflet, selectedCity]);
+  }, [leaflet]);
+  
+  // Update map view when selected city changes
+  useEffect(() => {
+    if (mapRef.current && leaflet) {
+      mapRef.current.setView(
+        [selectedCity.latitude, selectedCity.longitude],
+        selectedCity.zoomLevel
+      );
+    }
+  }, [selectedCity, leaflet]);
 
   // Center map on user's location
   const centerUserLocation = () => {
