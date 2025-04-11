@@ -4,7 +4,8 @@ import {
   User, 
   InsertUser, 
   users,
-  resources
+  resources,
+  cities
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -72,9 +73,28 @@ export class MemStorage implements IStorage {
   }
   
   async getResourcesByCity(cityName: string): Promise<Resource[]> {
-    return Array.from(this.resources.values()).filter(
-      resource => resource.city === cityName
-    );
+    // Get all resources
+    const allResources = Array.from(this.resources.values());
+    
+    // Find the selected city
+    const selectedCity = cities.find(city => city.name === cityName);
+    if (!selectedCity) {
+      return allResources; // Return all if city not found
+    }
+    
+    // Calculate distance of each resource from the selected city
+    // Only return resources within approximately 20 miles (0.3 degrees lat/long)
+    const MAX_DISTANCE = 0.3;
+    
+    return allResources.filter(resource => {
+      const lat = parseFloat(resource.latitude);
+      const lng = parseFloat(resource.longitude);
+      
+      const latDiff = Math.abs(lat - selectedCity.latitude);
+      const lngDiff = Math.abs(lng - selectedCity.longitude);
+      
+      return latDiff < MAX_DISTANCE && lngDiff < MAX_DISTANCE;
+    });
   }
   
   async getResourceById(id: number): Promise<Resource | undefined> {
@@ -91,8 +111,7 @@ export class MemStorage implements IStorage {
       latitude: insertResource.latitude.toString(),
       longitude: insertResource.longitude.toString(),
       hours: insertResource.hours || null,
-      notes: insertResource.notes || null,
-      city: insertResource.city
+      notes: insertResource.notes || null
     };
     this.resources.set(id, resource);
     return resource;
@@ -114,7 +133,6 @@ export class MemStorage implements IStorage {
     if (resourceUpdate.address !== undefined) formattedUpdate.address = resourceUpdate.address;
     if (resourceUpdate.hours !== undefined) formattedUpdate.hours = resourceUpdate.hours;
     if (resourceUpdate.notes !== undefined) formattedUpdate.notes = resourceUpdate.notes;
-    if (resourceUpdate.city !== undefined) formattedUpdate.city = resourceUpdate.city;
     
     // Convert latitude and longitude to strings if they exist
     if (resourceUpdate.latitude !== undefined) {
@@ -199,7 +217,28 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getResourcesByCity(cityName: string): Promise<Resource[]> {
-    return db.select().from(resources).where(eq(resources.city, cityName));
+    // Get all resources
+    const allResources = await this.getAllResources();
+    
+    // Find the selected city
+    const selectedCity = cities.find(city => city.name === cityName);
+    if (!selectedCity) {
+      return allResources; // Return all if city not found
+    }
+    
+    // Calculate distance of each resource from the selected city
+    // Only return resources within approximately 20 miles (0.3 degrees lat/long)
+    const MAX_DISTANCE = 0.3;
+    
+    return allResources.filter(resource => {
+      const lat = parseFloat(resource.latitude);
+      const lng = parseFloat(resource.longitude);
+      
+      const latDiff = Math.abs(lat - selectedCity.latitude);
+      const lngDiff = Math.abs(lng - selectedCity.longitude);
+      
+      return latDiff < MAX_DISTANCE && lngDiff < MAX_DISTANCE;
+    });
   }
 
   async getResourceById(id: number): Promise<Resource | undefined> {
@@ -237,7 +276,6 @@ export class DatabaseStorage implements IStorage {
     if (resourceUpdate.address !== undefined) formattedUpdate.address = resourceUpdate.address;
     if (resourceUpdate.hours !== undefined) formattedUpdate.hours = resourceUpdate.hours;
     if (resourceUpdate.notes !== undefined) formattedUpdate.notes = resourceUpdate.notes;
-    if (resourceUpdate.city !== undefined) formattedUpdate.city = resourceUpdate.city;
     
     // Convert latitude and longitude to strings if present
     if (resourceUpdate.latitude !== undefined) {

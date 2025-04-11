@@ -11,7 +11,6 @@ export const resources = pgTable("resources", {
   longitude: text("longitude").notNull(),
   hours: text("hours"),
   notes: text("notes"),
-  city: text("city").notNull(), // Add city field
 });
 
 export const resourceTypes = [
