@@ -15,7 +15,7 @@ interface MapContainerProps {
 }
 
 export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
-  const { filteredResources, isLoading } = useResourceStore();
+  const { filteredResources, isLoading, selectedCity } = useResourceStore();
   const { toast } = useToast();
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -36,8 +36,11 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
     
     const L = leaflet;
     
-    // Create map
-    mapRef.current = L.map(mapContainerRef.current).setView([47.6062, -122.3321], 14);
+    // Create map and set view to selected city
+    mapRef.current = L.map(mapContainerRef.current).setView(
+      [selectedCity.latitude, selectedCity.longitude], 
+      selectedCity.zoomLevel
+    );
     
     // Add tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -57,7 +60,7 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
         mapRef.current = null;
       }
     };
-  }, [leaflet]);
+  }, [leaflet, selectedCity]);
 
   // Center map on user's location
   const centerUserLocation = () => {

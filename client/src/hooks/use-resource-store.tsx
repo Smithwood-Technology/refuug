@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
-import { Resource, ResourceType, InsertResource } from "@shared/schema";
+import { Resource, ResourceType, InsertResource, cities, City } from "@shared/schema";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -10,6 +10,7 @@ interface ResourceState {
     showOpen: boolean;
     types: Record<ResourceType, boolean>;
   };
+  selectedCity: City;
   filteredResources: Resource[];
   isLoading: boolean;
   error: Error | null;
@@ -18,6 +19,7 @@ interface ResourceState {
 interface ResourceActions {
   toggleResourceType: (type: ResourceType) => void;
   toggleOpenNow: () => void;
+  setSelectedCity: (city: City) => void;
   addResource: (resource: InsertResource) => Promise<void>;
   updateResource: (id: number, data: Partial<InsertResource>) => Promise<void>;
   deleteResource: (id: number) => Promise<void>;
@@ -41,6 +43,9 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
       health: true,
     },
   });
+  
+  // Default to Atlanta
+  const [selectedCity, setSelectedCity] = useState<City>(cities[3]);
 
   // Fetch resources
   const { 
@@ -168,11 +173,13 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
   const value: ResourceStore = {
     resources: data,
     filters,
+    selectedCity,
     filteredResources,
     isLoading,
     error: error as Error | null,
     toggleResourceType,
     toggleOpenNow,
+    setSelectedCity,
     addResource,
     updateResource,
     deleteResource,

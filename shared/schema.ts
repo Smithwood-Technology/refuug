@@ -46,3 +46,44 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+// Predefined cities with their coordinates
+export const cities = [
+  {
+    name: "Miami",
+    state: "FL",
+    latitude: 25.7617,
+    longitude: -80.1918,
+    zoomLevel: 12
+  },
+  {
+    name: "Birmingham",
+    state: "AL",
+    latitude: 33.5186,
+    longitude: -86.8104,
+    zoomLevel: 12
+  },
+  {
+    name: "Huntsville",
+    state: "AL",
+    latitude: 34.7304,
+    longitude: -86.5861,
+    zoomLevel: 12
+  },
+  {
+    name: "Atlanta",
+    state: "GA",
+    latitude: 33.7490,
+    longitude: -84.3880,
+    zoomLevel: 12
+  },
+  {
+    name: "Charlotte",
+    state: "NC",
+    latitude: 35.2271,
+    longitude: -80.8431,
+    zoomLevel: 12
+  }
+];
+
+export type City = typeof cities[number];
