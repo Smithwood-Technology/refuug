@@ -20,6 +20,46 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+
+// Function to convert decimal coordinates to DDM (Degrees Decimal Minutes)
+function decimalToDDM(decimal: number, isLatitude: boolean = true): string {
+  if (decimal === undefined) return "";
+  
+  const absolute = Math.abs(decimal);
+  const degrees = Math.floor(absolute);
+  const minutes = (absolute - degrees) * 60;
+  
+  // For latitude, use N/S; for longitude, use E/W
+  const direction = isLatitude
+    ? (decimal >= 0 ? 'N' : 'S')
+    : (decimal >= 0 ? 'E' : 'W');
+  
+  return `${degrees}° ${minutes.toFixed(4)}' ${direction}`;
+}
+
+// Function to convert DDM (Degrees Decimal Minutes) to decimal
+function ddmToDecimal(ddm: string): number | null {
+  // Parse DDM format: "DD° MM.MMMM' Direction"
+  // This regex is more flexible and allows for various formats with or without spaces
+  const regex = /^(\d+)\s*°?\s*(\d*\.?\d*)\s*'?\s*([NSEWnsew])?/;
+  const match = ddm.match(regex);
+  
+  if (!match) return null;
+  
+  const degrees = parseFloat(match[1]);
+  const minutes = parseFloat(match[2] || '0'); // Default to 0 if minutes not specified
+  const direction = (match[3] || '').toUpperCase();
+  
+  let decimal = degrees + (minutes / 60);
+  
+  // Apply negative value for South or West
+  if (direction === 'S' || direction === 'W') {
+    decimal = -decimal;
+  }
+  
+  return decimal;
+}
 
 // Extend schema for form validation
 const formSchema = insertResourceSchema;
@@ -33,6 +73,10 @@ interface ResourceFormProps {
 }
 
 export default function ResourceForm({ initialData, onSubmit, onCancel }: ResourceFormProps) {
+  // State to hold the DDM format display values
+  const [latitudeDDM, setLatitudeDDM] = useState("");
+  const [longitudeDDM, setLongitudeDDM] = useState("");
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData ? {
@@ -54,6 +98,21 @@ export default function ResourceForm({ initialData, onSubmit, onCancel }: Resour
     },
   });
 
+  // Watch latitude and longitude values
+  const latitude = form.watch("latitude");
+  const longitude = form.watch("longitude");
+
+  // Initialize DDM values when form values change
+  useEffect(() => {
+    if (latitude !== undefined) {
+      setLatitudeDDM(decimalToDDM(latitude, true));
+    }
+    
+    if (longitude !== undefined) {
+      setLongitudeDDM(decimalToDDM(longitude, false));
+    }
+  }, [latitude, longitude]);
+
   const isSubmitting = form.formState.isSubmitting;
 
   // Get user's current location to pre-fill lat/lng fields
@@ -67,6 +126,7 @@ export default function ResourceForm({ initialData, onSubmit, onCancel }: Resour
         const { latitude, longitude } = position.coords;
         form.setValue("latitude", latitude);
         form.setValue("longitude", longitude);
+        // The useEffect will update the DDM displays automatically
       },
       (error) => {
         console.error("Error getting location:", error);
@@ -155,16 +215,52 @@ export default function ResourceForm({ initialData, onSubmit, onCancel }: Resour
               name="latitude"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Latitude *</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      step="any"
-                      {...field} 
-                      value={field.value === undefined ? '' : field.value}
-                      onChange={(e) => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))}
-                    />
-                  </FormControl>
+                  <FormLabel>Latitude * (Decimal or DDM format)</FormLabel>
+                  <div className="space-y-2">
+                    {/* Decimal input (hidden but used for form submission) */}
+                    <div className="hidden">
+                      <Input 
+                        type="number" 
+                        step="any"
+                        {...field} 
+                        value={field.value === undefined ? '' : field.value}
+                      />
+                    </div>
+                    
+                    {/* DDM Input */}
+                    <div className="flex items-center space-x-2">
+                      <Input 
+                        type="text"
+                        value={latitudeDDM}
+                        placeholder="DD° MM.MMMM' N/S"
+                        onChange={(e) => {
+                          setLatitudeDDM(e.target.value);
+                          const decimal = ddmToDecimal(e.target.value);
+                          if (decimal !== null) {
+                            field.onChange(decimal);
+                          }
+                        }}
+                      />
+                      
+                      {/* Toggle between N/S */}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          if (field.value === undefined) return;
+                          field.onChange(-field.value);
+                        }}
+                      >
+                        {field.value !== undefined && field.value >= 0 ? "N" : "S"}
+                      </Button>
+                    </div>
+                    
+                    {/* Decimal display for reference */}
+                    <p className="text-xs text-muted-foreground">
+                      Decimal: {field.value !== undefined ? field.value.toFixed(6) : 'Not set'}
+                    </p>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -175,23 +271,59 @@ export default function ResourceForm({ initialData, onSubmit, onCancel }: Resour
               name="longitude"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Longitude *</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      step="any"
-                      {...field} 
-                      value={field.value === undefined ? '' : field.value}
-                      onChange={(e) => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))}
-                    />
-                  </FormControl>
+                  <FormLabel>Longitude * (Decimal or DDM format)</FormLabel>
+                  <div className="space-y-2">
+                    {/* Decimal input (hidden but used for form submission) */}
+                    <div className="hidden">
+                      <Input 
+                        type="number" 
+                        step="any"
+                        {...field} 
+                        value={field.value === undefined ? '' : field.value}
+                      />
+                    </div>
+                    
+                    {/* DDM Input */}
+                    <div className="flex items-center space-x-2">
+                      <Input 
+                        type="text"
+                        value={longitudeDDM}
+                        placeholder="DD° MM.MMMM' E/W"
+                        onChange={(e) => {
+                          setLongitudeDDM(e.target.value);
+                          const decimal = ddmToDecimal(e.target.value);
+                          if (decimal !== null) {
+                            field.onChange(decimal);
+                          }
+                        }}
+                      />
+                      
+                      {/* Toggle between E/W */}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          if (field.value === undefined) return;
+                          field.onChange(-field.value);
+                        }}
+                      >
+                        {field.value !== undefined && field.value >= 0 ? "E" : "W"}
+                      </Button>
+                    </div>
+                    
+                    {/* Decimal display for reference */}
+                    <p className="text-xs text-muted-foreground">
+                      Decimal: {field.value !== undefined ? field.value.toFixed(6) : 'Not set'}
+                    </p>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
 
-          <div className="flex items-end pb-8">
+          <div className="flex items-end md:pb-8">
             <Button 
               type="button" 
               variant="outline" 
