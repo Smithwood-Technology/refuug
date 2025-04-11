@@ -47,12 +47,8 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
   // Default to Atlanta
   const [selectedCity, setSelectedCity] = useState<City>(cities[3]);
   
-  // Add effect to trigger refetch when the selected city changes
-  const handleCityChange = (city: City) => {
-    setSelectedCity(city);
-    // Invalidate the resource query when the city changes to trigger a refetch
-    queryClient.invalidateQueries({ queryKey: ["/api/resources", city.name] });
-  };
+  // This is not needed since we'll update the setSelectedCity function directly
+  // in the returned value object
 
   // Fetch resources based on selected city
   const { 
@@ -87,7 +83,7 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
         title: "Success",
         description: "Resource added successfully!",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/resources"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/resources", selectedCity.name] });
     },
     onError: (error) => {
       toast({
@@ -114,7 +110,7 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
         title: "Success",
         description: "Resource updated successfully!",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/resources"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/resources", selectedCity.name] });
     },
     onError: (error) => {
       toast({
@@ -135,7 +131,7 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
         title: "Success",
         description: "Resource deleted successfully!",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/resources"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/resources", selectedCity.name] });
     },
     onError: (error) => {
       toast({
@@ -194,6 +190,13 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
     await deleteResourceMutation.mutateAsync(id);
   };
 
+  // Define a custom function to update selected city and invalidate queries
+  const handleCityChange = (city: City) => {
+    setSelectedCity(city);
+    // Invalidate the resource query to trigger a refetch with the new city
+    queryClient.invalidateQueries({ queryKey: ["/api/resources", city.name] });
+  };
+
   const value: ResourceStore = {
     resources: data,
     filters,
@@ -203,7 +206,7 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
     error: error as Error | null,
     toggleResourceType,
     toggleOpenNow,
-    setSelectedCity,
+    setSelectedCity: handleCityChange, // Override with our custom function
     addResource,
     updateResource,
     deleteResource,
