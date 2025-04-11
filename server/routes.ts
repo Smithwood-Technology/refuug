@@ -8,10 +8,19 @@ import { setupAuth, isAuthenticated } from "./auth";
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication
   setupAuth(app);
-  // Get all resources
-  app.get("/api/resources", async (_req: Request, res: Response) => {
+  // Get all resources with optional city filter
+  app.get("/api/resources", async (req: Request, res: Response) => {
     try {
-      const resources = await storage.getAllResources();
+      // Check if city query parameter is provided
+      const cityName = req.query.city as string;
+      
+      let resources;
+      if (cityName) {
+        resources = await storage.getResourcesByCity(cityName);
+      } else {
+        resources = await storage.getAllResources();
+      }
+      
       return res.json(resources);
     } catch (error) {
       console.error("Error fetching resources:", error);

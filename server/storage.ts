@@ -21,6 +21,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   
   getAllResources(): Promise<Resource[]>;
+  getResourcesByCity(cityName: string): Promise<Resource[]>;
   getResourceById(id: number): Promise<Resource | undefined>;
   createResource(resource: InsertResource): Promise<Resource>;
   updateResource(id: number, resource: Partial<InsertResource>): Promise<Resource | undefined>;
@@ -70,6 +71,12 @@ export class MemStorage implements IStorage {
     return Array.from(this.resources.values());
   }
   
+  async getResourcesByCity(cityName: string): Promise<Resource[]> {
+    return Array.from(this.resources.values()).filter(
+      resource => resource.city === cityName
+    );
+  }
+  
   async getResourceById(id: number): Promise<Resource | undefined> {
     return this.resources.get(id);
   }
@@ -84,7 +91,8 @@ export class MemStorage implements IStorage {
       latitude: insertResource.latitude.toString(),
       longitude: insertResource.longitude.toString(),
       hours: insertResource.hours || null,
-      notes: insertResource.notes || null
+      notes: insertResource.notes || null,
+      city: insertResource.city
     };
     this.resources.set(id, resource);
     return resource;
@@ -106,6 +114,7 @@ export class MemStorage implements IStorage {
     if (resourceUpdate.address !== undefined) formattedUpdate.address = resourceUpdate.address;
     if (resourceUpdate.hours !== undefined) formattedUpdate.hours = resourceUpdate.hours;
     if (resourceUpdate.notes !== undefined) formattedUpdate.notes = resourceUpdate.notes;
+    if (resourceUpdate.city !== undefined) formattedUpdate.city = resourceUpdate.city;
     
     // Convert latitude and longitude to strings if they exist
     if (resourceUpdate.latitude !== undefined) {
@@ -188,6 +197,10 @@ export class DatabaseStorage implements IStorage {
   async getAllResources(): Promise<Resource[]> {
     return db.select().from(resources);
   }
+  
+  async getResourcesByCity(cityName: string): Promise<Resource[]> {
+    return db.select().from(resources).where(eq(resources.city, cityName));
+  }
 
   async getResourceById(id: number): Promise<Resource | undefined> {
     const [resource] = await db.select().from(resources).where(eq(resources.id, id));
@@ -224,6 +237,7 @@ export class DatabaseStorage implements IStorage {
     if (resourceUpdate.address !== undefined) formattedUpdate.address = resourceUpdate.address;
     if (resourceUpdate.hours !== undefined) formattedUpdate.hours = resourceUpdate.hours;
     if (resourceUpdate.notes !== undefined) formattedUpdate.notes = resourceUpdate.notes;
+    if (resourceUpdate.city !== undefined) formattedUpdate.city = resourceUpdate.city;
     
     // Convert latitude and longitude to strings if present
     if (resourceUpdate.latitude !== undefined) {

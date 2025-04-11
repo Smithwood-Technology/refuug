@@ -11,6 +11,7 @@ export const resources = pgTable("resources", {
   longitude: text("longitude").notNull(),
   hours: text("hours"),
   notes: text("notes"),
+  city: text("city").notNull(), // Add city field
 });
 
 export const resourceTypes = [
@@ -27,6 +28,7 @@ export const insertResourceSchema = createInsertSchema(resources).extend({
   type: z.enum(resourceTypes),
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
+  city: z.string().min(1).max(100),
 });
 
 export type InsertResource = z.infer<typeof insertResourceSchema>;
