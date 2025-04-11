@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { useResourceStore } from "@/hooks/use-resource-store";
 
 // Function to convert decimal coordinates to DDM (Degrees Decimal Minutes)
 function decimalToDDM(decimal: number, isLatitude: boolean = true): string {
@@ -76,6 +77,9 @@ export default function ResourceForm({ initialData, onSubmit, onCancel }: Resour
   // State to hold the DDM format display values
   const [latitudeDDM, setLatitudeDDM] = useState("");
   const [longitudeDDM, setLongitudeDDM] = useState("");
+  
+  // Get the currently selected city from the resource store
+  const { selectedCity } = useResourceStore();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -87,6 +91,7 @@ export default function ResourceForm({ initialData, onSubmit, onCancel }: Resour
       longitude: typeof initialData.longitude === 'string' ? parseFloat(initialData.longitude) : initialData.longitude,
       hours: initialData.hours || "",
       notes: initialData.notes || "",
+      city: selectedCity.name, // Add selected city
     } : {
       name: "",
       type: undefined,
@@ -95,6 +100,7 @@ export default function ResourceForm({ initialData, onSubmit, onCancel }: Resour
       longitude: undefined,
       hours: "",
       notes: "",
+      city: selectedCity.name, // Add selected city
     },
   });
 

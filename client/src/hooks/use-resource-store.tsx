@@ -47,20 +47,32 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
   // Default to Atlanta
   const [selectedCity, setSelectedCity] = useState<City>(cities[3]);
 
-  // Fetch resources
+  // Fetch resources based on selected city
   const { 
     data = [], 
     isLoading, 
     error,
     refetch
   } = useQuery<Resource[]>({ 
-    queryKey: ["/api/resources"]
+    queryKey: ["/api/resources", selectedCity.name],
+    queryFn: async () => {
+      const res = await fetch(`/api/resources?city=${encodeURIComponent(selectedCity.name)}`);
+      if (!res.ok) {
+        throw new Error('Failed to fetch resources');
+      }
+      return res.json();
+    }
   });
 
   // Add resource mutation
   const addResourceMutation = useMutation({
     mutationFn: async (resource: InsertResource) => {
-      const res = await apiRequest("POST", "/api/resources", resource);
+      // Ensure city is set to the currently selected city
+      const resourceWithCity = {
+        ...resource,
+        city: selectedCity.name
+      };
+      const res = await apiRequest("POST", "/api/resources", resourceWithCity);
       return res.json();
     },
     onSuccess: () => {
@@ -82,7 +94,12 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
   // Update resource mutation
   const updateResourceMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<InsertResource> }) => {
-      const res = await apiRequest("PATCH", `/api/resources/${id}`, data);
+      // If city is being updated, ensure it's the currently selected city
+      const updatedData = {
+        ...data,
+        city: selectedCity.name
+      };
+      const res = await apiRequest("PATCH", `/api/resources/${id}`, updatedData);
       return res.json();
     },
     onSuccess: () => {

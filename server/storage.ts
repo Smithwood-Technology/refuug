@@ -247,11 +247,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createResource(insertResource: InsertResource): Promise<Resource> {
+    // Filter out fields that don't exist in the database schema
+    const { latitude, longitude, name, type, address, hours, notes } = insertResource;
+    
     // Convert numeric latitude and longitude to strings for storage
     const resourceToInsert = {
-      ...insertResource,
-      latitude: insertResource.latitude.toString(),
-      longitude: insertResource.longitude.toString()
+      name,
+      type,
+      address,
+      latitude: latitude.toString(),
+      longitude: longitude.toString(),
+      hours: hours || null,
+      notes: notes || null
     };
 
     const [resource] = await db
