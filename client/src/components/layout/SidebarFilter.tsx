@@ -87,8 +87,70 @@ export default function SidebarFilter() {
               <SelectValue placeholder="Select city" />
             </SelectTrigger>
             <SelectContent>
-              {cities.map((city) => (
-                <SelectItem key={city.name} value={city.name}>
+              {/* Group cities by state */}
+              <SelectItem disabled value="al-header">Alabama</SelectItem>
+              {cities.filter(city => city.state === "AL").map((city) => (
+                <SelectItem key={`${city.name}-${city.state}`} value={city.name}>
+                  <div className="flex items-center">
+                    <MapPin className="w-3 h-3 mr-2" />
+                    {city.name}, {city.state}
+                  </div>
+                </SelectItem>
+              ))}
+              
+              <SelectItem disabled value="fl-header">Florida</SelectItem>
+              {cities.filter(city => city.state === "FL").map((city) => (
+                <SelectItem key={`${city.name}-${city.state}`} value={city.name}>
+                  <div className="flex items-center">
+                    <MapPin className="w-3 h-3 mr-2" />
+                    {city.name}, {city.state}
+                  </div>
+                </SelectItem>
+              ))}
+              
+              <SelectItem disabled value="ga-header">Georgia</SelectItem>
+              {cities.filter(city => city.state === "GA").map((city) => (
+                <SelectItem key={`${city.name}-${city.state}`} value={city.name}>
+                  <div className="flex items-center">
+                    <MapPin className="w-3 h-3 mr-2" />
+                    {city.name}, {city.state}
+                  </div>
+                </SelectItem>
+              ))}
+              
+              <SelectItem disabled value="ms-header">Mississippi</SelectItem>
+              {cities.filter(city => city.state === "MS").map((city) => (
+                <SelectItem key={`${city.name}-${city.state}`} value={city.name}>
+                  <div className="flex items-center">
+                    <MapPin className="w-3 h-3 mr-2" />
+                    {city.name}, {city.state}
+                  </div>
+                </SelectItem>
+              ))}
+              
+              <SelectItem disabled value="nc-header">North Carolina</SelectItem>
+              {cities.filter(city => city.state === "NC").map((city) => (
+                <SelectItem key={`${city.name}-${city.state}`} value={city.name}>
+                  <div className="flex items-center">
+                    <MapPin className="w-3 h-3 mr-2" />
+                    {city.name}, {city.state}
+                  </div>
+                </SelectItem>
+              ))}
+              
+              <SelectItem disabled value="sc-header">South Carolina</SelectItem>
+              {cities.filter(city => city.state === "SC").map((city) => (
+                <SelectItem key={`${city.name}-${city.state}`} value={city.name}>
+                  <div className="flex items-center">
+                    <MapPin className="w-3 h-3 mr-2" />
+                    {city.name}, {city.state}
+                  </div>
+                </SelectItem>
+              ))}
+              
+              <SelectItem disabled value="tn-header">Tennessee</SelectItem>
+              {cities.filter(city => city.state === "TN").map((city) => (
+                <SelectItem key={`${city.name}-${city.state}`} value={city.name}>
                   <div className="flex items-center">
                     <MapPin className="w-3 h-3 mr-2" />
                     {city.name}, {city.state}

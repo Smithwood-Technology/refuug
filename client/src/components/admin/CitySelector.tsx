@@ -46,11 +46,76 @@ export default function CitySelector() {
             <SelectValue placeholder="Select a city" />
           </SelectTrigger>
           <SelectContent>
-            {cities.map((city, index) => (
-              <SelectItem key={`${city.name}-${city.state}`} value={index.toString()}>
-                {city.name}, {city.state}
-              </SelectItem>
-            ))}
+            {/* Group cities by state */}
+            <SelectItem disabled value="al-header">Alabama</SelectItem>
+            {cities.filter(city => city.state === "AL").map((city, index) => {
+              const globalIndex = cities.findIndex(c => c.name === city.name && c.state === city.state);
+              return (
+                <SelectItem key={`${city.name}-${city.state}`} value={globalIndex.toString()}>
+                  {city.name}, {city.state}
+                </SelectItem>
+              );
+            })}
+            
+            <SelectItem disabled value="fl-header">Florida</SelectItem>
+            {cities.filter(city => city.state === "FL").map((city, index) => {
+              const globalIndex = cities.findIndex(c => c.name === city.name && c.state === city.state);
+              return (
+                <SelectItem key={`${city.name}-${city.state}`} value={globalIndex.toString()}>
+                  {city.name}, {city.state}
+                </SelectItem>
+              );
+            })}
+            
+            <SelectItem disabled value="ga-header">Georgia</SelectItem>
+            {cities.filter(city => city.state === "GA").map((city, index) => {
+              const globalIndex = cities.findIndex(c => c.name === city.name && c.state === city.state);
+              return (
+                <SelectItem key={`${city.name}-${city.state}`} value={globalIndex.toString()}>
+                  {city.name}, {city.state}
+                </SelectItem>
+              );
+            })}
+            
+            <SelectItem disabled value="ms-header">Mississippi</SelectItem>
+            {cities.filter(city => city.state === "MS").map((city, index) => {
+              const globalIndex = cities.findIndex(c => c.name === city.name && c.state === city.state);
+              return (
+                <SelectItem key={`${city.name}-${city.state}`} value={globalIndex.toString()}>
+                  {city.name}, {city.state}
+                </SelectItem>
+              );
+            })}
+            
+            <SelectItem disabled value="nc-header">North Carolina</SelectItem>
+            {cities.filter(city => city.state === "NC").map((city, index) => {
+              const globalIndex = cities.findIndex(c => c.name === city.name && c.state === city.state);
+              return (
+                <SelectItem key={`${city.name}-${city.state}`} value={globalIndex.toString()}>
+                  {city.name}, {city.state}
+                </SelectItem>
+              );
+            })}
+            
+            <SelectItem disabled value="sc-header">South Carolina</SelectItem>
+            {cities.filter(city => city.state === "SC").map((city, index) => {
+              const globalIndex = cities.findIndex(c => c.name === city.name && c.state === city.state);
+              return (
+                <SelectItem key={`${city.name}-${city.state}`} value={globalIndex.toString()}>
+                  {city.name}, {city.state}
+                </SelectItem>
+              );
+            })}
+            
+            <SelectItem disabled value="tn-header">Tennessee</SelectItem>
+            {cities.filter(city => city.state === "TN").map((city, index) => {
+              const globalIndex = cities.findIndex(c => c.name === city.name && c.state === city.state);
+              return (
+                <SelectItem key={`${city.name}-${city.state}`} value={globalIndex.toString()}>
+                  {city.name}, {city.state}
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
       </CardContent>
