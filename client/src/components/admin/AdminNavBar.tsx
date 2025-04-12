@@ -15,7 +15,7 @@ export default function AdminNavBar() {
     <header className="bg-card border-b border-border">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <h1 className="text-xl font-bold text-primary">Refuug</h1>
+          <h1 className="text-xl font-bold text-primary app-name">REFUUG</h1>
           <span className="text-sm bg-primary/10 text-primary px-2 py-0.5 rounded">Admin</span>
         </div>
         
