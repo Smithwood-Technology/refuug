@@ -55,7 +55,7 @@ export default function SidebarFilter() {
           </div>
         ) : (
           <div className="flex items-center flex-1">
-            <h1 className="text-xl font-medium">Urban Nomad</h1>
+            <h1 className="text-xl font-medium">Refuug</h1>
             <p className="text-sm opacity-80 ml-2">Find resources</p>
           </div>
         )}

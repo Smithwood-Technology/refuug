@@ -28,7 +28,7 @@ export default function LandingPage() {
       <div className="max-w-md w-full text-center space-y-8">
         {/* Logo and Title */}
         <div className="space-y-2">
-          <h1 className="text-4xl md:text-5xl font-bold text-primary">Urban Nomad</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-primary">Refuug</h1>
           <p className="text-lg text-muted-foreground">
             Find life-saving resources near you. Fast, free, and local.
           </p>
@@ -101,7 +101,7 @@ export default function LandingPage() {
 
         {/* Footer */}
         <div className="text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Urban Nomad. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Refuug. All rights reserved.</p>
         </div>
       </div>
     </div>

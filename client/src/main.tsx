@@ -3,7 +3,7 @@ import App from "./App";
 import "./index.css";
 
 // Set page title
-document.title = "Urban Nomad - Resource Finder";
+document.title = "Refuug - Resource Finder";
 
 // Add meta description for SEO
 const metaDescription = document.createElement('meta');

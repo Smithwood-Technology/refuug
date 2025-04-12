@@ -160,7 +160,7 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
       
       {/* Mobile top bar */}
       <div className="md:hidden absolute top-0 left-0 right-0 bg-card shadow-md z-10 px-4 py-3 flex justify-between items-center">
-        <h1 className="text-lg font-medium text-primary">Urban Nomad</h1>
+        <h1 className="text-lg font-medium text-primary">Refuug</h1>
         <Button 
           onClick={toggleFilterPanel}
           size="icon"
