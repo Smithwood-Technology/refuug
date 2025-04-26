@@ -3,7 +3,8 @@ import { useResourceStore } from "@/hooks/use-resource-store";
 import { useToast } from "@/hooks/use-toast";
 import { 
   MapPin, 
-  Filter
+  Filter,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ResourceMarker from "../resource/ResourceMarker";
@@ -20,6 +21,7 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [leaflet, setLeaflet] = useState<typeof import("leaflet") | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
 
   // Dynamic import of Leaflet to avoid SSR issues
   useEffect(() => {
@@ -72,8 +74,25 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
     }
   }, [selectedCity, leaflet]);
 
+  // Reference to user location marker
+  const userLocationMarkerRef = useRef<any>(null);
+  
   // Center map on user's location
   const centerUserLocation = () => {
+    // Don't allow multiple requests
+    if (isLocating) return;
+    
+    // Check if we're in a secure context (HTTPS or localhost)
+    if (!window.isSecureContext) {
+      toast({
+        title: "Security Error",
+        description: "Geolocation requires a secure context (HTTPS)",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Check if geolocation is available
     if (!navigator.geolocation || !mapRef.current) {
       toast({
         title: "Error",
@@ -83,26 +102,48 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
       return;
     }
 
+    // Show loading state
+    setIsLocating(true);
+    
+    // Show loading toast
+    toast({
+      title: "Locating",
+      description: "Finding your location...",
+    });
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         
-        if (mapRef.current) {
+        if (mapRef.current && leaflet) {
+          const L = leaflet;
+          
+          // Pan to user's location
           mapRef.current.setView([latitude, longitude], 15);
           
-          // Add a marker for user's location (optional)
-          if (leaflet) {
-            const L = leaflet;
-            L.marker([latitude, longitude], {
-              icon: L.divIcon({
-                html: `<div class="rounded-full bg-primary border-2 border-white w-6 h-6"></div>`,
-                className: '',
-                iconSize: [24, 24],
-                iconAnchor: [12, 12]
-              })
-            }).addTo(mapRef.current);
+          // Remove existing user location marker if it exists
+          if (userLocationMarkerRef.current) {
+            mapRef.current.removeLayer(userLocationMarkerRef.current);
           }
+          
+          // Create a pulsing marker for user's location
+          userLocationMarkerRef.current = L.marker([latitude, longitude], {
+            icon: L.divIcon({
+              html: `
+                <div class="relative">
+                  <div class="animate-ping absolute h-6 w-6 rounded-full bg-primary/50"></div>
+                  <div class="rounded-full bg-primary border-2 border-white w-6 h-6 relative"></div>
+                </div>
+              `,
+              className: '',
+              iconSize: [24, 24],
+              iconAnchor: [12, 12]
+            })
+          }).addTo(mapRef.current);
         }
+        
+        // Clear loading state
+        setIsLocating(false);
         
         toast({
           title: "Success",
@@ -110,15 +151,42 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
         });
       },
       (error) => {
+        // Clear loading state
+        setIsLocating(false);
+        
+        let errorMessage = "Could not get your location";
+        
+        switch(error.code) {
+          case 1: // PERMISSION_DENIED
+            errorMessage = "Location access was denied. Please enable location services.";
+            break;
+          case 2: // POSITION_UNAVAILABLE
+            errorMessage = "Location information is unavailable. Please try again.";
+            break;
+          case 3: // TIMEOUT
+            errorMessage = "Location request timed out. Please try again.";
+            break;
+          default:
+            errorMessage = `${errorMessage}: ${error.message}`;
+        }
+        
         toast({
           title: "Error",
-          description: `Could not get your location: ${error.message}`,
+          description: errorMessage,
           variant: "destructive",
         });
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
       }
     );
   };
 
+  // Reference to resource markers
+  const resourceMarkersRef = useRef<any[]>([]);
+  
   // Update markers when filtered resources change
   useEffect(() => {
     if (!leaflet || !mapRef.current) return;
@@ -126,12 +194,11 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
     const L = leaflet;
     const map = mapRef.current;
     
-    // Clear existing markers
-    map.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
-        map.removeLayer(layer);
-      }
+    // Clear existing resource markers without affecting user location marker
+    resourceMarkersRef.current.forEach(marker => {
+      map.removeLayer(marker);
     });
+    resourceMarkersRef.current = [];
     
     // Add markers for filtered resources
     filteredResources.forEach((resource) => {
@@ -139,6 +206,9 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
       const marker = L.marker([Number(resource.latitude), Number(resource.longitude)], {
         icon: ResourceMarker(resource.type, L)
       }).addTo(map);
+      
+      // Store reference to the marker
+      resourceMarkersRef.current.push(marker);
       
       // Bind popup with resource info
       marker.bindPopup(() => {
@@ -173,10 +243,15 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
       {/* Location button */}
       <Button
         onClick={centerUserLocation}
+        disabled={isLocating}
         size="icon"
         className="absolute bottom-32 md:bottom-6 right-6 bg-card hover:bg-accent text-primary p-3 rounded-full shadow-lg z-20"
       >
-        <MapPin className="h-5 w-5" />
+        {isLocating ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : (
+          <MapPin className="h-5 w-5" />
+        )}
       </Button>
     </div>
   );
