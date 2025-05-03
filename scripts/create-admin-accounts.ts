@@ -18,7 +18,7 @@ async function main() {
   
   for (const state of states) {
     const username = `admin_${state.toLowerCase()}`;
-    const password = `${state.toLowerCase()}123`;
+    const password = `${state.toLowerCase()}admin123`;
     
     try {
       // Check if user already exists
