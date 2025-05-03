@@ -11,6 +11,13 @@ import ResourceMarker from "../resource/ResourceMarker";
 import ResourcePopup from "../resource/ResourcePopup";
 import { Resource } from "@shared/schema";
 
+// Declare a global window interface to hold the accuracy circle
+declare global {
+  interface Window {
+    locationAccuracyCircle?: any;
+  }
+}
+
 interface MapContainerProps {
   toggleFilterPanel: () => void;
 }
@@ -110,16 +117,24 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
       title: "Locating",
       description: "Finding your location...",
     });
+    
+    // Request high accuracy location
+    const geoOptions = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    };
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const { latitude, longitude } = position.coords;
+        // Get coordinates with higher accuracy
+        const { latitude, longitude, accuracy } = position.coords;
         
         if (mapRef.current && leaflet) {
           const L = leaflet;
           
           // Pan to user's location
-          mapRef.current.setView([latitude, longitude], 15);
+          mapRef.current.setView([latitude, longitude], 16);
           
           // Remove existing user location marker if it exists
           if (userLocationMarkerRef.current) {
@@ -140,6 +155,20 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
               iconAnchor: [12, 12]
             })
           }).addTo(mapRef.current);
+          
+          // Add accuracy circle (shows the accuracy radius)
+          if (window.locationAccuracyCircle) {
+            mapRef.current.removeLayer(window.locationAccuracyCircle);
+          }
+          
+          // Create a circle showing the accuracy radius
+          window.locationAccuracyCircle = L.circle([latitude, longitude], {
+            radius: accuracy,
+            fillColor: '#3b82f6',
+            fillOpacity: 0.1,
+            color: '#3b82f6',
+            weight: 1
+          }).addTo(mapRef.current);
         }
         
         // Clear loading state
@@ -147,7 +176,7 @@ export default function MapContainer({ toggleFilterPanel }: MapContainerProps) {
         
         toast({
           title: "Success",
-          description: "Located you on the map",
+          description: `Located you within ${Math.round(accuracy)}m`,
         });
       },
       (error) => {
